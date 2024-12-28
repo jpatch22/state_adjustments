@@ -1,5 +1,15 @@
 #!/bin/zsh
 
+log_file="/tmp/detect_keyboard_debug.log"
+
+# Log function
+log() {
+  echo "$(date): $1" >> $log_file
+}
+
+# Log startup
+log "Script started"
+
 # File to track the last state
 STATE_FILE="/tmp/keyboard_state"
 
@@ -32,11 +42,11 @@ while true; do
 
   if [[ "$last_state" != "$current_state" ]]; then
     if [[ "$current_state" == "detected" ]]; then
-      echo "Moonlander Mark I plugged in"
+      log "Moonlander Mark I plugged in"
       hidutil property --set '{"UserKeyMapping":[]}'
       # Add your command here for when the keyboard is plugged in
     else
-      echo "Moonlander Mark I unplugged"
+      log "Moonlander Mark I unplugged"
       hidutil property --set '{
         "UserKeyMapping": [
         {
@@ -56,6 +66,6 @@ while true; do
   fi
 
   last_state="$current_state"
-  sleep 0.01 # Adjust the polling interval as needed
+  sleep 2
 done
 
